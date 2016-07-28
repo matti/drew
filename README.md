@@ -39,3 +39,20 @@ git clone https://github.com/matti/drew.git
 cd drew
 ln -s $(pwd)/bin/drew /usr/local/bin/drew
 ```
+
+## usage
+
+```
+$ drew
+   _
+ _| |___ ___ _ _ _
+| . |  _| -_| | | |
+|___|_| |___|_____|
+
+Usage:
+
+drew install {youtube-dl,ffmpeg,...}    # Searches for matches and installs the command
+drew install -y youtube-dl              # Uses the first match
+drew install -f youtube-dl              # Always overwrites /usr/local/bin/youtube-dl
+drew install -yf youtube-dl             # Uses first match, always overwrites
+```
