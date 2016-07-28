@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+set -e
+if [ "$(basename $0)" == "drew" ]; then
+
+  this_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+  case $1 in
+  "install")
+    shift 1
+
+    while true; do
+      case "$1" in
+        -yf|-fy)
+          use_first_match=true      # so much better than getopt/getopts fuckery.
+          force_remove=true
+          ;;
+        -y|--yes)
+          use_first_match=true
+          ;;
+        -f|--force)
+          force_remove=true
+          ;;
+        *)
+          break;
+          ;;
+      esac
+      shift
+    done
+
+    docker_image=$1
+    link_name=$(basename $docker_image)
+    link_target=/usr/local/bin/$link_name
+
+    first_registry_match_line=$(docker search --no-trunc $docker_image | head -n 2 | tail -n 1)
+    first_registry_match_image=$(echo $first_registry_match_line | awk '{print $1}')
+
+    if [ $first_registry_match_image != $docker_image ]; then
+      if [ -z "$use_first_match" ]; then
+        echo $first_registry_match_line
+        printf "\\nFound '$first_registry_match_image' from the registry, use that? (Y/n): "
+        read input
+      else
+        input="y"
+      fi
+
+      if [[ $input =~ ^([yY]|^$)$ ]]; then
+        docker_image=$first_registry_match_image
+      else
+        echo
+        docker search $docker_image
+        exit 1
+      fi
+    fi
+
+    [ -f $link_target ] && target_type="File (not link)"
+    [ -L $link_target ] && target_type="Link"
+
+
+    if [ -n "$target_type" ]; then
+      if [ -z "$force_remove" ]; then
+        printf "$target_type $link_target already exists. Remove it? (y/N): "
+        read input
+      else
+        input="y"
+      fi
+
+      if [ "$input" == "y" ]; then
+        rm $link_target
+      else
+        exit 1
+      fi
+    fi
+
+    docker pull $docker_image
+    docker tag $docker_image $link_name
+
+    ln -s "$this_path/drew" $link_target
+    ;;
+  *)
+cat << EOF
+   _
+ _| |___ ___ _ _ _
+| . |  _| -_| | | |
+|___|_| |___|_____|
+EOF
+    echo
+    echo "Usage: "
+    echo ""
+    echo "drew install {youtube-dl,ffmpeg,...}    # Searches for matches and installs the command"
+    echo "drew install -y youtube-dl              # Uses the first match"
+    echo "drew install -f youtube-dl              # Always overwrites /usr/local/bin/youtube-dl"
+    echo "drew install -yf youtube-dl             # Uses first match, always overwrites"
+    ;;
+  esac
+else
+  image_name=$(basename $0)
+
+  docker run -it --rm -v $(pwd):/drew -w /drew --entrypoint $image_name $image_name $@
+fi
