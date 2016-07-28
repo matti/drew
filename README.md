@@ -20,14 +20,11 @@ $ youtube-dl https://www.youtube.com/watch\?v\=AIiW8VllwSg
 [youtube] AIiW8VllwSg: Downloading video info webpage
 [youtube] AIiW8VllwSg: Extracting video information
 [youtube] AIiW8VllwSg: Downloading MPD manifest
-WARNING: Requested formats are incompatible for merge and will be merged into mkv.
 [download] Destination: akumusa.swf-AIiW8VllwSg.f133.mp4
 [download] 100% of 3.55MiB in 00:02
 [download] Destination: akumusa.swf-AIiW8VllwSg.f171.webm
 [download] 100% of 2.00MiB in 00:01
 [ffmpeg] Merging formats into "akumusa.swf-AIiW8VllwSg.mkv"
-Deleting original file akumusa.swf-AIiW8VllwSg.f133.mp4 (pass -k to keep)
-Deleting original file akumusa.swf-AIiW8VllwSg.f171.webm (pass -k to keep)
 
 $ open akumusa.swf-AIiW8VllwSg.mkv
 ```
