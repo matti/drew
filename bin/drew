@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -e
+hash docker
+
 if [ "$(basename $0)" == "drew" ]; then
 
   this_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
